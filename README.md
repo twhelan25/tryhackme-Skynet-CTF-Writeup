@@ -27,4 +27,46 @@ Command break down:
 
 -oN nmap.txt: This option specifies normal output that should be saved to a file named “nmap.txt.
 
-This scan reveals many open ports, but I'll just focus on the relavent ones:
+This scan reveals a few open ports that will prove very useful:
+
+![nmap1](https://github.com/user-attachments/assets/b1fe2435-176d-40e8-94e4-4638fa50b40e)
+
+First, let check out the webserver on port 80. It takes use to a skynet search engine, that doesn't seem to have much of any functionality.
+
+![skynet search](https://github.com/user-attachments/assets/f03da96c-57b1-45b4-9faa-e5f1ff157a88)
+
+Ok, let's try a gobuster scan on the target.
+```bash
+gobuster dir -u $ip -w=/usr/share/wordlists/seclists/Discovery/Web-Content/raft-medium-words.txt -x php,txt,html -o bust.txt
+```
+The scan reveals a few interesting directories:
+
+![buster](https://github.com/user-attachments/assets/fc0b7eba-d432-4df7-adc7-059c36c20d41)
+
+![nikto](https://github.com/user-attachments/assets/3fd6b280-f9c4-4f27-84bb-446aaf06644e)
+
+
+Most of them are forbidden, but squirrelmail takes us to a webmail login. This must be the 110/tcp pop3 port that was revealed in the nmap scan. I tried to log in with some default credentials but no luck. Let's take note of the error message "Unknown user or password incorrect."
+
+# SMB Enumeration
+Our nmap scan revealed 445/tcp for smbd Samba. 
+
+![nmap smb](https://github.com/user-attachments/assets/0b5faf0f-148e-4228-88a6-695927533129)
+
+A good tool for digger deeper on this is enum4linux. 
+```bash
+enum4linux $ip | tee enum.txt
+```
+The scan revealed a list of shares, including anonymous where the mapping wasn't denied, and /milesdyson share. 
+Let's try to log onto the anonymous share using smbclient and no password: 
+
+![smbclient anon](https://github.com/user-attachments/assets/72391461-7bd5-4038-9e34-0b40e78c2057)
+
+And we're in! Use get attention.txt and log1.txt as we can see that log1 is only file containing info. Let's make a smb dir and move the files into it:
+```bash
+mkdir smb | mv attention.txt log1.txt smb
+```
+
+
+
+
