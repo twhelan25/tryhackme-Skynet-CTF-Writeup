@@ -83,3 +83,25 @@ smbclient -U milesdyson //$ip/milesdyson
 And we're in! There's a lot of irrelivent files here, so let's just cd into notes. There's a file called important.txt and I bet it is important. Let's get it.
 
 ![important](https://github.com/user-attachments/assets/8fd28c32-991c-4256-a266-fce4f6941628)
+
+This is the T 800 by the way:
+
+![T 800](https://github.com/user-attachments/assets/443575a4-e053-40a5-9523-a7bfa7124a05)
+
+CMS /45kra24zxs28v3yd is a hidden directory:
+
+![hidden dir](https://github.com/user-attachments/assets/06e7034e-fc47-4ee6-b63e-a50fbcad115f)
+
+It's a bio page for Dr. Miles Dyson, but it doesn't seem to have anything else of interest. Let's do a gobuster scan to see if it leads to other hidden directories:
+```bash
+gobuster dir -u $ip/45kra24zxs28v3yd -w=/usr/share/wordlists/seclists/Discovery/Web-Content/raft-medium-words.txt -x php,txt,html -o bust.txt
+```
+And this reveals an administrator directory:
+
+
+![cuppa cms](https://github.com/user-attachments/assets/8a36934b-9b82-4bb1-835d-8a265ca543d4)
+
+I tried logging in with the credentials we found earlier but no luck. Let's try searching for vulnerabilities in this "cuppa cms" with searchsploit.
+
+![searchsploit](https://github.com/user-attachments/assets/24dcf396-5117-43f4-972f-947882757361)
+
