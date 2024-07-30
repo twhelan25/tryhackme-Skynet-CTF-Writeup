@@ -67,6 +67,11 @@ And we're in! Use get attention.txt and log1.txt as we can see that log1 is only
 mkdir smb | mv attention.txt log1.txt smb
 ```
 
+![smb files](https://github.com/user-attachments/assets/e1d6ab6d-5abb-4f16-b45e-c923b5873b18)
 
+So we have a message from Miles Dyson about changing passwords and a wordlist, which likely contains a valid password. Let's try to attack Mile's password to squirrelmail.
+Since we're dealing with a pretty small number of possible passwords, I'll just use burp suite to attack the login. Turn on burp proxy to capture the post login request, right click the request and sent to intruder. Leave sniper attack selected and position the payload markers on the password, (in my case I just used admin) as shown in the screen shot. Next, move to the payloads tab, and load the smb wordlist log1.txt and click attack. Before long the password will be revealed as it results in a different status and length:
+
+![sniper results](https://github.com/user-attachments/assets/3a2b4d38-3f34-4e8b-a383-a8df7f1f0e75)
 
 
