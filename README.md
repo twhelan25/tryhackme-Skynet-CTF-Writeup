@@ -72,6 +72,14 @@ mkdir smb | mv attention.txt log1.txt smb
 So we have a message from Miles Dyson about changing passwords and a wordlist, which likely contains a valid password. Let's try to attack Mile's password to squirrelmail.
 Since we're dealing with a pretty small number of possible passwords, I'll just use burp suite to attack the login. Turn on burp proxy to capture the post login request, right click the request and sent to intruder. Leave sniper attack selected and position the payload markers on the password, (in my case I just used admin) as shown in the screen shot. Next, move to the payloads tab, and load the smb wordlist log1.txt and click attack. Before long the password will be revealed as it results in a different status and length:
 
-![sniper results](https://github.com/user-attachments/assets/3a2b4d38-3f34-4e8b-a383-a8df7f1f0e75)
+![sniper results](https://github.com/user-attachments/assets/89891a06-33d4-4b14-994a-be277c94fdfc)
 
+We can now log into Miles mail with milesdyson and the password.
+Let's check out the email samba password reset. It sure enough it has Mile's password for smb login.
+Now let's use smbclient again to log onto the smb share:
+```bash
+smbclient -U milesdyson //$ip/milesdyson
+```
+And we're in! There's a lot of irrelivent files here, so let's just cd into notes. There's a file called important.txt and I bet it is important. Let's get it.
 
+![important](https://github.com/user-attachments/assets/8fd28c32-991c-4256-a266-fce4f6941628)
