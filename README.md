@@ -171,3 +171,14 @@ I also found an interesting file backups/backup.sh:
 
 ![image](https://github.com/user-attachments/assets/71faab58-630e-42a4-b1bd-61611c13d212)
 
+Let's use linpeas.sh to get a broad over view of vulnerabilities on the target. If you don't already have it on your machine you can use this command to download it:
+```bash
+wget https://github.com/carlospolop/PEASS-ng/releases/latest/download/linpeas.sh
+```
+Now, python server from your machine:
+```bash
+python3 -m http.server
+```
+Then run the following commands shown in the screen shot from the target machine:
+
+![linpeas sh](https://github.com/user-attachments/assets/a83820c6-c8da-4987-bbf7-6e40107d26e2)
