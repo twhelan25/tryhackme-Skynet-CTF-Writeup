@@ -167,9 +167,11 @@ stty rows 16 columns 138
 # Privilege Escalation
 Now, let's find a way to escalate privilages.
 In mile's home directory we can cat user.txt.
-I also found an interesting file backups/backup.sh:
+I also found an interesting file backups/backup.sh. Root can execute this file but we can read it. 
 
 ![image](https://github.com/user-attachments/assets/71faab58-630e-42a4-b1bd-61611c13d212)
+
+This file is a bash script, that cds to /var/ww/html, and creates a tar archieve to backup.tgz. The * in this case is a wildcard function that can be abused. What we can do because of that * wildcard is inject into for our own purposes. Here is a link to an article about wildcard injection: https://www.hackingarticles.in/exploiting-wildcard-for-privilege-escalation/  
 
 Let's use linpeas.sh to get a broad over view of vulnerabilities on the target. If you don't already have it on your machine you can use this command to download it:
 ```bash
@@ -179,6 +181,12 @@ Now, python server from your machine:
 ```bash
 python3 -m http.server
 ```
-Then run the following commands shown in the screen shot from the target machine:
+Then run the following commands shown in the screen shot from the target machine using your attacker IP:
 
 ![linpeas sh](https://github.com/user-attachments/assets/a83820c6-c8da-4987-bbf7-6e40107d26e2)
+
+Now, let's cat output and see what we can find. When we get to the cron jobs there is a very important one that we can use:
+
+![cron job](https://github.com/user-attachments/assets/a01be8d8-cfc3-4082-a637-a21b3f7a9c26)
+
+This showing that every minute, root is excuting the backups/backup.sh file. 
