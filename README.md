@@ -156,3 +156,13 @@ http://10.10.33.12/45kra24zxs28v3yd/administrator/alerts/alertConfigField.php?ur
 And we down have a reverse shell as www-data! Upgrade your shell as shown in the screen shot:
 
 ![shell](https://github.com/user-attachments/assets/c75151c8-6f82-47a1-bf9b-9635d0615000)
+
+Just to avoid confusion, after setting the xterm, and suspending your shell. The two are stty commands are to copy your ability to use tab completion and are entered form your machine:
+```bash
+stty raw -echo; fg
+```
+```bash
+stty rows 16 columns 138
+```
+# Privilege Escalation
+Now, let's find a way to escalate privilages.
