@@ -185,8 +185,15 @@ Then run the following commands shown in the screen shot from the target machine
 
 ![linpeas sh](https://github.com/user-attachments/assets/a83820c6-c8da-4987-bbf7-6e40107d26e2)
 
+
+# Exploitation
 Now, let's cat output and see what we can find. When we get to the cron jobs there is a very important one that we can use:
 
 ![cron job](https://github.com/user-attachments/assets/a01be8d8-cfc3-4082-a637-a21b3f7a9c26)
 
-This showing that every minute, root is excuting the backups/backup.sh file. 
+This showing that every minute, root is excuting the backups/backup.sh file That has the potential for a wild card injection. 
+So, what will will do is write our own script called shell.sh. Then injection the shell.sh into the checkpoint so it we be excuted by root, every minute as we saw in he cron job. Because these files are in the html directory the wild card tar function will expand them, and they will be executed to give us root.
+Let's go about this by checking out /bin/bash:
+
+We will write a script to have root, make /bin/bash a set uid binary, so that we can invoke it with the command /bin/bash -p to become root. 
+
