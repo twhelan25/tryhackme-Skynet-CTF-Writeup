@@ -195,5 +195,11 @@ This showing that every minute, root is excuting the backups/backup.sh file That
 So, what will will do is write our own script called shell.sh. Then injection the shell.sh into the checkpoint so it we be excuted by root, every minute as we saw in he cron job. Because these files are in the html directory the wild card tar function will expand them, and they will be executed to give us root.
 Let's go about this by checking out /bin/bash:
 
-We will write a script to have root, make /bin/bash a set uid binary, so that we can invoke it with the command /bin/bash -p to become root. 
+We will write a script to have root, make /bin/bash a set uid binary, so that we can invoke it with the command /bin/bash -p to become root.
+This process is demonstarted in the screen shot below:
+
+
+![exploit](https://github.com/user-attachments/assets/83ea6cd9-1d10-4b21-836d-ca3fc2aab4a4)
+
+I hope you enjoyed this CTF, hasta la vista baby!
 
