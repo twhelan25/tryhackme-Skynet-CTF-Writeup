@@ -75,6 +75,21 @@ Since we're dealing with a pretty small number of possible passwords, I'll just 
 ![sniper results](https://github.com/user-attachments/assets/89891a06-33d4-4b14-994a-be277c94fdfc)
 
 We can now log into Miles mail with milesdyson and the password.
+
+There are a couple messages from serenakogan@skynet that appear to contain an encoded binary message. Let's head to CyberChef and decode from binary. We get the message "balls have zero to me to me to me to me to me to me to me to me to". The other message from her is not encrypted and apears to have more song lyrics "i can i i everything else . . . . . . . . . . . . . .
+balls have zero to me to me to me to me to me to me to me to me to
+you i everything else . . . . . . . . . . . . . .
+balls have a ball to me to me to me to me to me to me to me
+i i can i i i everything else . . . . . . . . . . . . . .
+balls have a ball to me to me to me to me to me to me to me
+i . . . . . . . . . . . . . . . . . . .
+balls have zero to me to me to me to me to me to me to me to me to
+you i i i i i everything else . . . . . . . . . . . . . .
+balls have 0 to me to me to me to me to me to me to me to me to
+you i i i everything else . . . . . . . . . . . . . .
+balls have zero to me to me to me to me to me to me to me to me t".
+I did a little research on what this is, and it was reported on a Facebook AI experiment, where bots who were programmed to engage in negotiations began to develop their own language and this was from bot negotiations. Interesting, but unrelated to this CTF's progress. Here's a link to an article if you interested: https://www.poetryfoundation.org/harriet-books/2017/06/balls-have-zero-to-me-to-me-ais-non-human-language
+
 Let's check out the email samba password reset. It sure enough it has Mile's password for smb login.
 Now let's use smbclient again to log onto the smb share:
 ```bash
