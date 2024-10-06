@@ -80,6 +80,11 @@ Next, move to the payloads tab, and load the smb wordlist log1.txt and click att
 
 We can now log into Miles mail with milesdyson and the password.
 
+We can also achieve the same result using hydra:
+```bash
+hydra -l milesdyson -P /root/smb/log1.txt $ip http-post-form "/squirrelmail/src/redirect.php/:login_username=^USER^&secretkey=^PASS^:Unknown user or password incorrect."
+```
+
 There are a couple messages from serenakogan@skynet that appear to contain an encoded binary message. Let's head to CyberChef and decode from binary. We get the message "balls have zero to me to me to me to me to me to me to me to me to". The other message from her is not encrypted and apears to have more song lyrics "i can i i everything else . . . . . . . . . . . . . .
 balls have zero to me to me to me to me to me to me to me to me to
 you i everything else . . . . . . . . . . . . . .
